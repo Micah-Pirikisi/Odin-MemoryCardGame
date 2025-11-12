@@ -1,0 +1,22 @@
+{
+  "name": "odin-memorycardgame",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Micah-Pirikisi/Odin-MemoryCardGame#readme",
+  "bugs": {
+    "url": "https://github.com/Micah-Pirikisi/Odin-MemoryCardGame/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Micah-Pirikisi/Odin-MemoryCardGame.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
