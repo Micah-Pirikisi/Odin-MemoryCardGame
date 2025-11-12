@@ -1,7 +1,12 @@
 import React from "react";
 import Card from "./Card.jsx";
 
-function CardGrid({ cards, flippedCards, matchedCards, onCardClick }) {
+export default function CardGrid({
+  cards,
+  flippedCards,
+  matchedCards,
+  onCardClick,
+}) {
   return (
     <div className="grid">
       {cards.map((card, index) => (
@@ -17,5 +22,3 @@ function CardGrid({ cards, flippedCards, matchedCards, onCardClick }) {
     </div>
   );
 }
-
-export default CardGrid;
