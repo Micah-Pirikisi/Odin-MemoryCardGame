@@ -11,11 +11,13 @@ export default function App() {
 
   // Fetch Pokémon and create cards
   useEffect(() => {
+    let revealTimeout;
+
     fetch("https://pokeapi.co/api/v2/pokemon?limit=6")
       .then((res) => res.json())
       .then((data) => {
         // Create a unique id for each duplicate
-        const cards = data.results.flatMap((pokemon, index) => [
+        const created = data.results.flatMap((pokemon, index) => [
           {
             id: index * 2 + 1,
             name: pokemon.name,
@@ -32,9 +34,19 @@ export default function App() {
           },
         ]);
 
-        setCards(shuffleArray(cards));
+        const shuffled = shuffleArray(created);
+        setCards(shuffled);
+
+        // Reveal all cards briefly at start so the player can memorize positions
+        const allIds = shuffled.map((c) => c.id);
+        setFlippedCards(allIds);
+        revealTimeout = setTimeout(() => setFlippedCards([]), 3000);
       })
       .catch((err) => console.error("Error fetching Pokémon:", err));
+
+    return () => {
+      if (revealTimeout) clearTimeout(revealTimeout);
+    };
   }, []);
 
   // Fisher-Yates shuffle
@@ -45,6 +57,16 @@ export default function App() {
       [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
     }
     return newArr;
+  }
+
+  function reshuffleAndReveal() {
+    const shuffled = shuffleArray(cards);
+    setCards(shuffled);
+
+    // Show all cards for 5 seconds
+    const allIds = shuffled.map((c) => c.id);
+    setFlippedCards(allIds);
+    setTimeout(() => setFlippedCards([]), 5000);
   }
 
   function handleCardClick(id) {
@@ -74,10 +96,9 @@ export default function App() {
         // and reshuffle the board so the order changes after the streak is broken.
         setTimeout(() => {
           setFlippedCards([]);
-          // Clear matched cards so they will flip back as well
           setMatchedCards([]);
           setCurrentScore(0);
-          setCards((prev) => shuffleArray(prev));
+          reshuffleAndReveal();
         }, 1000);
       }
     }
