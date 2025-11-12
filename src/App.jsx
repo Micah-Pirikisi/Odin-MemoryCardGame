@@ -9,29 +9,50 @@ export default function App() {
   const [currentScore, setCurrentScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
 
+  // Fetch Pokémon and create cards
   useEffect(() => {
     fetch("https://pokeapi.co/api/v2/pokemon?limit=6")
-      .then((res) => res.join())
+      .then((res) => res.json())
       .then((data) => {
-        const cards = data.results.map((pokemon, index) => ({
-          id: index + 1,
-          name: pokemon.name,
-          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
-            index + 1
-          }.png`,
-        }));
-        const paired = [...cards, ...cards];
-        setCards(shuffleArray(paired));
-      });
+        // Create a unique id for each duplicate
+        const cards = data.results.flatMap((pokemon, index) => [
+          {
+            id: index * 2 + 1,
+            name: pokemon.name,
+            image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
+              index + 1
+            }.png`,
+          },
+          {
+            id: index * 2 + 2,
+            name: pokemon.name,
+            image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
+              index + 1
+            }.png`,
+          },
+        ]);
+
+        setCards(shuffleArray(cards));
+      })
+      .catch((err) => console.error("Error fetching Pokémon:", err));
   }, []);
 
+  // Fisher-Yates shuffle
   function shuffleArray(array) {
-    return [...array], sort(() => Math.random() - 0.5);
+    const newArr = [...array];
+    for (let i = newArr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+    }
+    return newArr;
   }
 
   function handleCardClick(id) {
+    // Ignore clicks on already flipped or matched cards
     if (flippedCards.includes(id) || matchedCards.includes(id)) return;
+
     const newFlipped = [...flippedCards, id];
+    setFlippedCards(newFlipped);
 
     if (newFlipped.length === 2) {
       const [first, second] = newFlipped;
@@ -41,20 +62,12 @@ export default function App() {
       if (firstCard.name === secondCard.name) {
         setMatchedCards([...matchedCards, first, second]);
         setCurrentScore((prev) => prev + 1);
+        setBestScore((prev) => Math.max(prev, currentScore + 1));
+        setFlippedCards([]); // reset flipped cards
       } else {
+        // Flip back unmatched cards after 1 second
         setTimeout(() => setFlippedCards([]), 1000);
       }
-      setFlippedCards([]);
-    } else {
-      setFlippedCards(newFlipped);
-    }
-
-    // shuffle on every click
-    setCards(shuffleArray(cards));
-
-    // update best score
-    if (currentScore + 1 > bestScore) {
-      setBestScore(currentScore + 1);
     }
   }
 

@@ -8,15 +8,15 @@ export default function CardGrid({
   onCardClick,
 }) {
   return (
-    <div className="grid">
-      {cards.map((card, index) => (
+    <div style={{ display: "flex", flexWrap: "wrap", maxWidth: "350px" }}>
+      {cards.map((card) => (
         <Card
-          key={index}
+          key={card.id}
           card={card}
           isFlipped={
             flippedCards.includes(card.id) || matchedCards.includes(card.id)
           }
-          onClick={() => onCardClick(card.id)}
+          onClick={onCardClick}
         />
       ))}
     </div>
