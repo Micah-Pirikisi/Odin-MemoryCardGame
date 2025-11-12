@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Card({ card, isFlipped, onClick }) {
+export default function Card({ card, isFlipped, isMatched, onClick }) {
   return (
     <div
       className={`card ${isFlipped ? "flipped" : ""}`}
@@ -13,8 +13,10 @@ export default function Card({ card, isFlipped, onClick }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        cursor: "pointer",
+        cursor: isMatched ? "default" : "pointer",
         backgroundColor: isFlipped ? "#fff" : "#ccc",
+        transition: "0.3s",
+        userSelect: "none",
       }}
     >
       {isFlipped ? (

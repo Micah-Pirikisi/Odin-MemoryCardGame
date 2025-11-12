@@ -8,15 +8,22 @@ export default function CardGrid({
   onCardClick,
 }) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", maxWidth: "350px" }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(4, 110px)",
+        justifyContent: "center",
+        gap: "10px",
+        marginTop: "20px",
+      }}
+    >
       {cards.map((card) => (
         <Card
           key={card.id}
           card={card}
-          isFlipped={
-            flippedCards.includes(card.id) || matchedCards.includes(card.id)
-          }
-          onClick={onCardClick}
+          isFlipped={flippedCards.includes(card.id)}
+          isMatched={matchedCards.includes(card.id)}
+          onClick={() => onCardClick(card.id)}
         />
       ))}
     </div>
