@@ -60,13 +60,25 @@ export default function App() {
       const secondCard = cards.find((card) => card.id === second);
 
       if (firstCard.name === secondCard.name) {
-        setMatchedCards([...matchedCards, first, second]);
-        setCurrentScore((prev) => prev + 1);
-        setBestScore((prev) => Math.max(prev, currentScore + 1));
+        // Add to matched and increase the current consecutive-match streak.
+        setMatchedCards((prev) => [...prev, first, second]);
+        setCurrentScore((prev) => {
+          const next = prev + 1;
+          // Update best score based on the new streak value
+          setBestScore((bs) => Math.max(bs, next));
+          return next;
+        });
         setFlippedCards([]); // reset flipped cards
       } else {
-        // Flip back unmatched cards after 1 second
-        setTimeout(() => setFlippedCards([]), 1000);
+        // Flip back unmatched cards after 1 second, reset the current streak,
+        // and reshuffle the board so the order changes after the streak is broken.
+        setTimeout(() => {
+          setFlippedCards([]);
+          // Clear matched cards so they will flip back as well
+          setMatchedCards([]);
+          setCurrentScore(0);
+          setCards((prev) => shuffleArray(prev));
+        }, 1000);
       }
     }
   }
