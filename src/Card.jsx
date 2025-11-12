@@ -1,10 +1,15 @@
 import React from "react";
 
 export default function Card({ card, isFlipped, isMatched, onClick }) {
+  // Consider a card visible if it's currently flipped or has been matched
+  const visible = isFlipped || isMatched;
+
   return (
     <div
-      className={`card ${isFlipped ? "flipped" : ""}`}
-      onClick={() => onClick(card.id)}
+      className={`card ${visible ? "flipped" : ""}`}
+      onClick={() => {
+        if (!isMatched) onClick(card.id);
+      }}
       style={{
         width: "100px",
         height: "100px",
@@ -14,12 +19,12 @@ export default function Card({ card, isFlipped, isMatched, onClick }) {
         alignItems: "center",
         justifyContent: "center",
         cursor: isMatched ? "default" : "pointer",
-        backgroundColor: isFlipped ? "#fff" : "#ccc",
+        backgroundColor: visible ? "#fff" : "#ccc",
         transition: "0.3s",
         userSelect: "none",
       }}
     >
-      {isFlipped ? (
+      {visible ? (
         <img
           src={card.image}
           alt={card.name}
